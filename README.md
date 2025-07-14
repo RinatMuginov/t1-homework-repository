@@ -1,2 +1,3 @@
-# T1_HomeWorkRepository
-Test Project for T1
+a simple web application for task management with the ability to group by due date (Today, Tomorrow, Next 7 days). The user can view the list of tasks, go to the details of each task, edit their properties (title, description, category, status, priority) and save changes. The interface is made using the Ant Design component library and is adapted to different screen sizes.
+
+React18, TypeScript, React Router v6, Ant Design, vite, CSS
