@@ -1,43 +1,65 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Form, Input, Select, Button, Space, Result } from "antd";
-import type { TaskItem } from "./types";
-import type { Dispatch, SetStateAction } from "react";
+import { useTaskStore } from "@entities/model/store";
+import type { TaskItem, TaskDate } from "@entities/model/types";
 
-interface Props {
-  tasks: TaskItem[];
-  setTasks: Dispatch<SetStateAction<TaskItem[]>>;
-}
-
-export default function TaskDetails({ tasks, setTasks }: Props) {
-  const { id }   = useParams();
+export default function TaskDetails() {
+  const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
-  const task     = tasks.find(t => t.id === Number(id));
 
-  if (!task) return <Result status="404" title="Task not found" />;
-
+  const { tasks, addTask, updateTask } = useTaskStore();
   const [form] = Form.useForm<TaskItem>();
 
-  const updateTask = (u: TaskItem) =>
-    setTasks(prev => prev.map(t => (t.id === u.id ? u : t)));
+  const isCreating = id === "new";
+  const task = !isCreating ? tasks.find((t) => t.id === Number(id)) : null;
+
+  // Если редактируем и задача не найдена — 404
+  if (!isCreating && !task) {
+    return (
+      <Result
+        status="404"
+        title="Task not found"
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back to tasks
+          </Button>
+        }
+      />
+    );
+  }
+
+  // Начальные значения для новой задачи
+  const initialValues: Omit<TaskItem, "id"> = task ?? {
+    taskHeader: "",
+    taskDescription: "",
+    taskCategory: "Feature",
+    taskStatus: "To Do",
+    taskPriority: "Medium",
+    taskDate: "Today",
+  };
+
+  const handleFinish = (values: Omit<TaskItem, "id">) => {
+    if (isCreating) {
+      const newId = Math.max(0, ...tasks.map((t) => t.id)) + 1;
+      addTask({ id: newId, ...values });
+    } else if (task) {
+      updateTask({ id: task.id, ...values });
+    }
+
+    navigate("/");
+  };
 
   return (
-        <div className="task-details-container">
-        <Button
-        type="text"
-        onClick={() => navigate(-1)}
-        className="back-button"
-        tabIndex={0}
-        >
+    <div className="task-details-container">
+      <Button type="text" onClick={() => navigate(-1)} className="back-button">
         Back to list
-        </Button>
+      </Button>
+
       <Form
         form={form}
-        initialValues={task}
+        initialValues={initialValues}
         layout="vertical"
-        onFinish={vals => {
-          updateTask({ ...task, ...vals });
-          navigate("/");
-        }}
+        onFinish={handleFinish}
       >
         <Form.Item name="taskHeader" label="Header" rules={[{ required: true }]}>
           <Input />
@@ -48,32 +70,29 @@ export default function TaskDetails({ tasks, setTasks }: Props) {
         </Form.Item>
 
         <Form.Item name="taskCategory" label="Category">
-          <Select options={["Bug","Feature","Documentation","Refactor","Test"].map(v=>({value:v}))}/>
+          <Select options={["Bug", "Feature", "Documentation", "Refactor", "Test"].map(v => ({ value: v }))} />
         </Form.Item>
 
         <Form.Item name="taskStatus" label="Status">
-          <Select options={["To Do","In Progress","Done"].map(v=>({value:v}))}/>
+          <Select options={["To Do", "In Progress", "Done"].map(v => ({ value: v }))} />
         </Form.Item>
 
         <Form.Item name="taskPriority" label="Priority">
-          <Select options={["Low","Medium","High"].map(v=>({value:v}))}/>
+          <Select options={["Low", "Medium", "High"].map(v => ({ value: v }))} />
         </Form.Item>
 
         <Form.Item name="taskDate" label="Date" rules={[{ required: true }]}>
-            <Select options={["Today", "Tomorrow", "Next 7 days"].map(value => ({ value }))} />
+          <Select options={["Today", "Tomorrow", "Next 7 days"].map(v => ({ value: v }))} />
         </Form.Item>
 
         <Form.Item>
-        <Space>
-            <Button type="primary" htmlType="submit" className="save-button">
-            Save
-            </Button>
-            <Button onClick={() => navigate(-1)} className="save-button">
+          <Button className="add-task-button">
+            {isCreating ? "Create Task" : "Save"}
+          </Button>
+          <Button onClick={() => navigate(-1)} className="add-task-button">
             Cancel
-            </Button>
-        </Space>
+          </Button>
         </Form.Item>
-
       </Form>
     </div>
   );

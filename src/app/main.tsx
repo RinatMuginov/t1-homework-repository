@@ -1,10 +1,10 @@
-import ReactDOM from "react-dom/client";
+import * as ReactDOM from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
-import RootApp from "./App";
-import "antd/dist/reset.css";
+import App from "./App";
+import "@styles/App.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
-    <RootApp />
+    <App />
   </BrowserRouter>
 );
