@@ -36,14 +36,14 @@ export default function TaskFormPage() {
     );
   }
 
-  const handleFinish = (values: Partial<TaskItem>) => {
-    if (isCreating) {
-      addTask({ ...values, id: Date.now() } as TaskItem);
-    } else if (task) {
-      updateTask({ ...task, ...values });
-    }
-    navigate("/");
-  };
+const handleFinish = (values: Partial<TaskItem>) => {
+  if (isCreating) {
+    addTask(values as Omit<TaskItem, "id">);
+  } else if (task) {
+    updateTask(task.id, values);
+  }
+  navigate("/");
+};
 
   return (
     <div className="main-container">

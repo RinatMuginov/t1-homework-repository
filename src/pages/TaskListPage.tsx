@@ -1,5 +1,5 @@
 import { Button, Typography } from "antd";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import TaskCard from "../entities/ui/TaskCard";
 import { useTaskStore } from "@entities/model/store";
@@ -8,8 +8,12 @@ import type { TaskItem, TaskDate } from "@entities/model/types";
 const DATES: TaskDate[] = ["Today", "Tomorrow", "Next 7 days"];
 
 export default function TaskList() {
-  const { tasks } = useTaskStore();
+  const { tasks, loadTasks } = useTaskStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
 
   const groupedTasks = useMemo(() => {
     const groups: Record<TaskDate, TaskItem[]> = {

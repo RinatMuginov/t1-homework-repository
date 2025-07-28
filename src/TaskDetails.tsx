@@ -40,12 +40,10 @@ export default function TaskDetails() {
 
   const handleFinish = (values: Omit<TaskItem, "id">) => {
     if (isCreating) {
-      const newId = Math.max(0, ...tasks.map((t) => t.id)) + 1;
-      addTask({ id: newId, ...values });
+      addTask(values);
     } else if (task) {
-      updateTask({ id: task.id, ...values });
+      updateTask(task.id, values);
     }
-
     navigate("/");
   };
 
