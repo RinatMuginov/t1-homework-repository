@@ -1,4 +1,4 @@
-export type TaskCategory = "Bug" | "Feature" | "Documentation" | "Refactor" | "Test";
+export type TaskCategory = "Bug" | "Feature" | "Documentation";
 export type TaskStatus   = "To Do" | "In Progress" | "Done";
 export type TaskPriority = "Low"   | "Medium"     | "High";
 export type TaskDate     = "Today" | "Tomorrow"   | "Next 7 days";

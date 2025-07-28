@@ -7,7 +7,7 @@ The interface is made using the Ant Design component library and is adapted to d
 The project uses React 18, TypeScript, React Router v6, Zustand for state management, and Vite for fast development and build.
 
 to launch my project just:
-1. git clone https://github.com/RinatMuginov/T1_HomeWorkRepository.git
+1. git clone https://github.com/RinatMuginov/t1-homework-repository.git
 2. git checkout server
 3. npm install
 4. npm run build
